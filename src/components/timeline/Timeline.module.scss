@@ -1,0 +1,72 @@
+.timeline {
+	padding: 40px 80px;
+}
+
+.header h2 {
+	font-size: 36px;
+	margin: 0 0 20px 0;
+}
+
+.centerArea {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	height: 420px;
+}
+
+.numberLarge {
+	font-size: 160px;
+	font-weight: 700;
+	position: absolute;
+	z-index: 2;
+	left: 30%;
+}
+
+.circleWrap {
+	position: absolute;
+	width: 520px;
+	height: 520px;
+	z-index: 1;
+}
+
+.circleLine {
+	stroke: rgba(33, 48, 71, 0.08);
+	stroke-width: 2;
+}
+
+.controlDot {
+	fill: #213047;
+	opacity: 0.85;
+}
+
+.activeBubble {
+	fill: white;
+	stroke: rgba(33, 48, 71, 0.08);
+	stroke-width: 2;
+}
+
+.sliderArea {
+	margin-top: 30px;
+}
+
+.footerControls {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-top: 24px;
+}
+
+.footerControls button {
+	height: 40px;
+	width: 40px;
+	border-radius: 50%;
+	border: none;
+	background: white;
+	box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+	cursor: pointer;
+}
+
+.indexInfo {
+	color: #6b7b8f;
+}

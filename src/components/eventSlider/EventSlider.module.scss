@@ -1,0 +1,59 @@
+.sliderWrap {
+	max-width: 980px;
+	margin: 0 auto;
+}
+
+.card {
+	background: white;
+	padding: 24px;
+	border-radius: 12px;
+	box-shadow: 0 4px 18px rgba(33, 48, 71, 0.06);
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+	&:hover {
+		transform: translateY(-4px);
+		box-shadow: 0 6px 24px rgba(33, 48, 71, 0.1);
+	}
+}
+
+.meta {
+	display: flex;
+	flex-direction: column;
+}
+
+.date {
+	font-size: 13px;
+	color: #6b7b8f;
+	margin-bottom: 6px;
+}
+
+.title {
+	margin: 0 0 8px 0;
+	font-size: 20px;
+	font-weight: 600;
+	color: #213047;
+}
+
+.desc {
+	margin: 0;
+	font-size: 15px;
+	line-height: 1.5;
+	color: #3a4a5a;
+}
+
+/* Настройки Swiper */
+.swiper-button-prev,
+.swiper-button-next {
+	color: #213047;
+	&:after {
+		font-size: 22px;
+	}
+}
+
+.swiper-pagination-bullet {
+	background: #c2c6cc;
+	opacity: 1;
+	&-active {
+		background: var(--accent-blue);
+	}
+}
