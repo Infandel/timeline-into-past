@@ -60,7 +60,7 @@ const data: Interval[] = [
 	{
 		id: 'i2022',
 		events: [
-			{ id: 'e5', title: 'Science', date: '2004', description: 'Another key thing in 2022.' },
+			{ id: 'e5', title: 'Science', date: '2014', description: 'Another key thing in 2022.' },
 			{ id: 'e6', title: 'Event B', date: '2015', description: 'Super serious event was happened' },
 		],
 	},

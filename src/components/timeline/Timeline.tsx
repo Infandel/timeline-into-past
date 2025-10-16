@@ -1,9 +1,10 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Interval } from '../../data/timelineData';
 import styles from './Timeline.module.scss';
 import EventSlider from '../eventSlider/EventSlider';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import cn from 'clsx';
 
 type Props = {
 	intervals: Interval[];
@@ -14,38 +15,88 @@ type Props = {
 const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
 
 const Timeline: React.FC<Props> = ({ intervals, activeIndex, onChangeIndex }) => {
+	const containerRef = useRef<HTMLDivElement | null>(null);
 	const circleRef = useRef<HTMLDivElement | null>(null);
-	const controlsRef = useRef<SVGGElement | null>(null);
+	const startingYear = useRef<HTMLSpanElement | null>(null);
+	const [startYear, setStartYear] = useState(intervals[activeIndex]?.events[0]?.date);
+	const endingYear = useRef<HTMLSpanElement | null>(null);
+	const [endYear, setEndYear] = useState(intervals[activeIndex]?.events?.at(-1)?.date);
 
-	const points = useMemo(() => {
-		const n = intervals.length;
-		const arr = [];
-		for (let i = 0; i < n; i++) arr.push(i);
-		return arr;
-	}, [intervals.length]);
-
+	// Drawing small circles on a Big main circle
 	useGSAP(
 		() => {
-			const angle = (360 / intervals.length) * activeIndex;
+			if (!circleRef.current || intervals.length === 0) return;
 
-			if (controlsRef.current) {
-				gsap.to(controlsRef.current, { rotation: angle, transformOrigin: '50% 50%', duration: 0.6 });
-			}
+			const radius = circleRef.current.offsetWidth / 2;
+
+			// Position images around the circle
+			intervals.forEach((_, i) => {
+				const angle = (i / intervals.length) * Math.PI * 2 - Math.PI / 2; // start top
+				const image = circleRef.current?.querySelector(`.img-${i}`);
+
+				if (image) {
+					gsap.set(image, {
+						x: Math.cos(angle) * radius,
+						y: Math.sin(angle) * radius,
+					});
+				}
+			});
 		},
-		{ dependencies: [activeIndex, intervals.length] }
+		{ dependencies: [intervals.length], scope: containerRef }
 	);
 
-	// compute positions for points on circle
-	const radius = 180; // visual radius
-	const center = { x: 0, y: 0 };
+	// Animating years changing in dynamic manner
+	useGSAP(
+		() => {
+			// Create an object to animate
+			const obj = { startYear: +startingYear.current!.textContent, endYear: +endingYear.current!.textContent };
 
-	const computePos = (idx: number) => {
-		const n = intervals.length;
-		const angle = (idx / n) * Math.PI * 2 - Math.PI / 2; // start top
-		const x = Math.cos(angle) * radius;
-		const y = Math.sin(angle) * radius;
-		return { x, y };
-	};
+			// compute an end year if available from the current active interval
+			const startYear = Number(intervals[activeIndex]?.events[0]?.date);
+			const endYear = Number(intervals[activeIndex]?.events?.at(-1)?.date);
+
+			gsap.to(obj, {
+				startYear,
+				duration: 0.5, // total duration in seconds
+				ease: 'none',
+				onUpdate: () => {
+					// Round and render the year to the DOM (guarding against null ref)
+					startingYear.current!.textContent = Math.round(+obj.startYear).toString();
+				},
+			});
+			setStartYear(intervals[activeIndex]?.events[0]?.date);
+
+			gsap.to(obj, {
+				endYear,
+				duration: 0.5, // total duration in seconds
+				ease: 'none',
+				onUpdate: () => {
+					// Round and render the year to the DOM (guarding against null ref)
+					endingYear.current!.textContent = Math.round(+obj.endYear).toString();
+				},
+			});
+			setEndYear(intervals[activeIndex]?.events?.at(-1)?.date);
+		},
+		{ dependencies: [intervals.length, activeIndex], scope: containerRef }
+	);
+
+	const { contextSafe } = useGSAP({ dependencies: [activeIndex, intervals.length], scope: containerRef }); // we can pass in a config object as the 1st parameter to make scoping simple
+
+	// ✅ wrapped in contextSafe() - animation will be cleaned up correctly
+	// selector text is scoped properly to the container.
+	const onSegmentClick = contextSafe(() => {
+		gsap.to('.main-circle', {
+			rotation: `+=${360 / intervals.length}`,
+			duration: 0.7,
+			ease: 'power1.inOut',
+		});
+
+		gsap.to('.circle-image', {
+			rotation: `-=${360 / intervals.length}`,
+			duration: 0.7,
+			ease: 'power1.inOut',
+		});
+	});
 
 	return (
 		<div className={styles.timeline}>
@@ -55,41 +106,17 @@ const Timeline: React.FC<Props> = ({ intervals, activeIndex, onChangeIndex }) =>
 
 			<div className={styles.centerArea}>
 				<div className={styles.numberLarge}>
-					{intervals[activeIndex]?.events[0]?.date || '2000'}
-					<span>{intervals[activeIndex]?.events?.at(-1)?.date || '2022'}</span>
+					<span ref={startingYear}>{startYear || '2000'}</span>
+					<span ref={endingYear}>{endYear || '2022'}</span>
 				</div>
-
-				<div className={styles.circleWrap} ref={circleRef}>
-					<svg width='520' height='520' viewBox='0 0 520 520' className={styles.circleSvg}>
-						<g transform='translate(260,260)'>
-							<circle r='220' className={styles.circleLine} fill='none' />
-
-							{/* control points */}
-							<g ref={controlsRef}>
-								{points.map((i) => {
-									const p = computePos(i);
-									return (
-										<g key={i} transform={`translate(${p.x}, ${p.y})`}>
-											<circle
-												className={styles.controlDot}
-												r='6'
-												onClick={() => onChangeIndex(i)}
-												style={{ cursor: 'pointer' }}
-											/>
-											{i === activeIndex && (
-												<g transform={`translate(18,-8)`}>
-													<circle r='20' className={styles.activeBubble} />
-													<text x='-8' y='6' fontSize='14' fill='#213047'>
-														{i + 1}
-													</text>
-												</g>
-											)}
-										</g>
-									);
-								})}
-							</g>
-						</g>
-					</svg>
+				<div ref={containerRef} className={styles.circleContainer}>
+					<div ref={circleRef} className={cn('main-circle', styles.mainCircle)}>
+						{intervals.map((_, i) => (
+							<button key={i} className={cn(`circle-image`, styles.circleContent, `img-${i}`)} onClick={onSegmentClick}>
+								<div className={styles.innerNumber}>{i + 1}</div>
+							</button>
+						))}
+					</div>
 				</div>
 			</div>
 

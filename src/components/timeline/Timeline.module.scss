@@ -18,38 +18,49 @@
 .numberLarge {
 	font-size: 160px;
 	font-weight: 700;
-	z-index: 2;
+	z-index: -1;
 	color: var(--accent-blue);
 
 	display: flex;
 	gap: 40px;
 
-	span {
+	span:last-child {
 		color: var(--accent-pink);
 	}
 }
 
-.circleWrap {
+.circleContainer {
 	position: absolute;
-	width: 520px;
-	height: 520px;
-	z-index: 1;
 }
 
-.circleLine {
-	stroke: rgba(33, 48, 71, 0.08);
-	stroke-width: 2;
+.mainCircle {
+	width: 400px;
+	height: 400px;
+	border-radius: 50%;
+	border: 2px solid rgb(202, 181, 181);
 }
 
-.controlDot {
-	fill: #213047;
-	opacity: 0.85;
-}
+.circleContent {
+	position: absolute;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	border: 3px solid white;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+	background-color: whitesmoke;
 
-.activeBubble {
-	fill: white;
-	stroke: rgba(33, 48, 71, 0.08);
-	stroke-width: 2;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	cursor: pointer;
+
+	.innerNumber {
+		font-weight: bold;
+	}
 }
 
 .sliderArea {
