@@ -106,8 +106,8 @@ const Timeline: React.FC<Props> = ({ intervals, activeIndex, onChangeIndex }) =>
 
 			<div className={styles.centerArea}>
 				<div className={styles.numberLarge}>
-					<span ref={startingYear}>{startYear || '2000'}</span>
-					<span ref={endingYear}>{endYear || '2022'}</span>
+					<span ref={startingYear}>{startYear}</span>
+					<span ref={endingYear}>{endYear}</span>
 				</div>
 				<div ref={containerRef} className={styles.circleContainer}>
 					<div ref={circleRef} className={cn('main-circle', styles.mainCircle)}>
