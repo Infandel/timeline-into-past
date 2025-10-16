@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { Interval } from '../../data/timelineData';
 import styles from './Timeline.module.scss';
 import EventSlider from '../eventSlider/EventSlider';
 import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 
 type Props = {
 	intervals: Interval[];
@@ -23,13 +24,16 @@ const Timeline: React.FC<Props> = ({ intervals, activeIndex, onChangeIndex }) =>
 		return arr;
 	}, [intervals.length]);
 
-	useEffect(() => {
-		// rotate the control handle group to align active index
-		const angle = (360 / intervals.length) * activeIndex;
-		if (controlsRef.current) {
-			gsap.to(controlsRef.current, { rotation: angle, transformOrigin: '50% 50%', duration: 0.6 });
-		}
-	}, [activeIndex, intervals.length]);
+	useGSAP(
+		() => {
+			const angle = (360 / intervals.length) * activeIndex;
+
+			if (controlsRef.current) {
+				gsap.to(controlsRef.current, { rotation: angle, transformOrigin: '50% 50%', duration: 0.6 });
+			}
+		},
+		{ dependencies: [activeIndex, intervals.length] }
+	);
 
 	// compute positions for points on circle
 	const radius = 180; // visual radius
@@ -46,15 +50,13 @@ const Timeline: React.FC<Props> = ({ intervals, activeIndex, onChangeIndex }) =>
 	return (
 		<div className={styles.timeline}>
 			<div className={styles.header}>
-				<h2>Исторические даты</h2>
+				<h2>Historical dates</h2>
 			</div>
 
 			<div className={styles.centerArea}>
-				<div
-					className={styles.numberLarge}
-					style={{ color: intervals[activeIndex].color === 'pink' ? 'var(--accent-pink)' : 'var(--accent-blue)' }}
-				>
-					{intervals[activeIndex].year}
+				<div className={styles.numberLarge}>
+					{intervals[activeIndex]?.events[0]?.date || '2000'}
+					<span>{intervals[activeIndex]?.events?.at(-1)?.date || '2022'}</span>
 				</div>
 
 				<div className={styles.circleWrap} ref={circleRef}>

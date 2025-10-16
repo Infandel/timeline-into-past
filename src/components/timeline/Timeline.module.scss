@@ -18,9 +18,15 @@
 .numberLarge {
 	font-size: 160px;
 	font-weight: 700;
-	position: absolute;
 	z-index: 2;
-	left: 30%;
+	color: var(--accent-blue);
+
+	display: flex;
+	gap: 40px;
+
+	span {
+		color: var(--accent-pink);
+	}
 }
 
 .circleWrap {

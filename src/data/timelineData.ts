@@ -7,59 +7,61 @@ export type EventItem = {
 
 export type Interval = {
 	id: string;
-	year: string; // large number shown in center
-	color: 'blue' | 'pink' | string;
 	events: EventItem[];
 };
 
 const data: Interval[] = [
 	{
 		id: 'i2015',
-		year: '2015',
-		color: 'blue',
 		events: [
 			{
 				id: 'e1',
-				title: 'Частное солнечное затмение',
-				date: '13 сентября',
-				description: 'Частное солнечное затмение, видимое в Южной Африке и части Антарктиды.',
+				title: 'Solar eclipse',
+				date: '2001',
+				description: 'Solar eclipse in South Africe. Was pretty huge.',
 			},
-			{ id: 'e2', title: 'Событие A', date: '20 марта', description: 'Дополнительная информация о событии A.' },
+			{ id: 'e2', title: 'Event A', date: '2002', description: 'Additional information about event A' },
 		],
 	},
 	{
 		id: 'i2016',
-		year: '2016',
-		color: 'blue',
 		events: [
 			{
 				id: 'e3',
-				title: 'Хаббл обнаружил GN-z11',
-				date: '07 марта',
-				description: 'Телескоп «Хаббл» обнаружил самую удалённую галактику.',
+				title: 'Hubble have found GZ-321',
+				date: '2003',
+				description: 'Oh it is our Hubble telescope. And it is working.',
+			},
+			{
+				id: 'e8',
+				title: 'Hubble have found GZ-324',
+				date: '2004',
+				description: 'And it is just works.',
 			},
 		],
 	},
 	{
 		id: 'i2017',
-		year: '2017',
-		color: 'pink',
 		events: [
 			{
 				id: 'e4',
-				title: 'Представлен Tesla Semi',
-				date: '16 ноября',
-				description: 'Компания Tesla представила электрический грузовик Tesla Semi.',
+				title: 'Tesla booms the market',
+				date: '2002',
+				description: 'Tesla introduced their new Cybertruck.',
+			},
+			{
+				id: 'e7',
+				title: 'Tesla',
+				date: '2005',
+				description: 'Tesla introduced their new Cybertruck2 .',
 			},
 		],
 	},
 	{
 		id: 'i2022',
-		year: '2022',
-		color: 'pink',
 		events: [
-			{ id: 'e5', title: 'Наука', date: '—', description: 'Пример ключевого события в 2022.' },
-			{ id: 'e6', title: 'Событие B', date: '01 июня', description: 'Доп. описание события B.' },
+			{ id: 'e5', title: 'Science', date: '2004', description: 'Another key thing in 2022.' },
+			{ id: 'e6', title: 'Event B', date: '2015', description: 'Super serious event was happened' },
 		],
 	},
 ];
