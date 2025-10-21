@@ -20,7 +20,7 @@ function generateTimelineDataForCategory(category: CategoryKey, numberOfEvents: 
 
 	const events: EventItem[] = Array.from({ length: numberOfEvents }, () => {
 		return {
-			id: `e${uuidv4()}`,
+			id: `${uuidv4()}`,
 			title: getRandomItem(categoryData.titles),
 			date: generateRandomYear(),
 			description: getRandomItem(categoryData.descriptions),
@@ -28,7 +28,7 @@ function generateTimelineDataForCategory(category: CategoryKey, numberOfEvents: 
 	}).sort((event1, event2) => Number(event1.date) - Number(event2.date));
 
 	return {
-		id: `i${uuidv4()}`,
+		id: `${uuidv4()}`,
 		category: category,
 		events,
 	};
