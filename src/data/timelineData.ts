@@ -5,65 +5,131 @@ export type EventItem = {
 	description: string;
 };
 
-export type Interval = {
+export type TimelineData = {
 	id: string;
+	category: string;
 	events: EventItem[];
 };
 
-const data: Interval[] = [
-	{
-		id: 'i2015',
-		events: [
-			{
-				id: 'e1',
-				title: 'Solar eclipse',
-				date: '2001',
-				description: 'Solar eclipse in South Africe. Was pretty huge.',
-			},
-			{ id: 'e2', title: 'Event A', date: '2002', description: 'Additional information about event A' },
-		],
-	},
-	{
-		id: 'i2016',
-		events: [
-			{
-				id: 'e3',
-				title: 'Hubble have found GZ-321',
-				date: '2003',
-				description: 'Oh it is our Hubble telescope. And it is working.',
-			},
-			{
-				id: 'e8',
-				title: 'Hubble have found GZ-324',
-				date: '2004',
-				description: 'And it is just works.',
-			},
-		],
-	},
-	{
-		id: 'i2017',
-		events: [
-			{
-				id: 'e4',
-				title: 'Tesla booms the market',
-				date: '2002',
-				description: 'Tesla introduced their new Cybertruck.',
-			},
-			{
-				id: 'e7',
-				title: 'Tesla',
-				date: '2005',
-				description: 'Tesla introduced their new Cybertruck2 .',
-			},
-		],
-	},
-	{
-		id: 'i2022',
-		events: [
-			{ id: 'e5', title: 'Science', date: '2014', description: 'Another key thing in 2022.' },
-			{ id: 'e6', title: 'Event B', date: '2015', description: 'Super serious event was happened' },
-		],
-	},
-];
+export type CategoryKey = keyof typeof CATEGORIES;
 
-export default data;
+// Categories and their specific data
+export const CATEGORIES = {
+	Science: {
+		titles: [
+			'Solar eclipse',
+			'Moon landing',
+			'Hubble telescope launch',
+			'Discovery of DNA',
+			'First successful cloning',
+			'Mars rover landing',
+			'Quantum computer breakthrough',
+			'COVID-19 vaccine development',
+			'Gravitational waves detection',
+			'Human genome project completion',
+			'International Space Station launch',
+			'Theory of relativity publication',
+		],
+		descriptions: [
+			'Major breakthrough in scientific research',
+			'Groundbreaking discovery that changed our understanding',
+			'Important scientific expedition and findings',
+			'Revolutionary invention in the field',
+			'Significant research publication that influenced the scientific community',
+			'Experimental verification of fundamental theories',
+			'Technological advancement in research methods',
+		],
+	},
+	Literature: {
+		titles: [
+			'Publication of famous novel',
+			'Nobel Prize in Literature',
+			'Literary movement begins',
+			'Bestselling book release',
+			'Author receives prestigious award',
+			'Classic work published',
+			'Literary festival inauguration',
+			'Poetry collection debut',
+			'Literary criticism published',
+			'Translation of ancient texts completed',
+		],
+		descriptions: [
+			'Influential work that shaped modern literature',
+			'Award-winning piece that received critical acclaim',
+			'Cultural phenomenon that captivated readers worldwide',
+			'Seminal work in its literary genre',
+			'Book that sparked important social discussions',
+			'Literary masterpiece that defined a generation',
+			'Groundbreaking narrative style that influenced writers',
+		],
+	},
+	Films: {
+		titles: [
+			'Blockbuster movie premiere',
+			'Oscar award ceremony',
+			'Film festival grand opening',
+			'Classic film release',
+			'Groundbreaking animation debut',
+			'Cult film premiere',
+			'Record-breaking box success',
+			"Director's landmark film",
+			'First film with new technology',
+			'Influential documentary release',
+		],
+		descriptions: [
+			'Cinematic masterpiece that redefined filmmaking',
+			'Award-winning performance and direction',
+			'Cultural impact that influenced generations',
+			'Technical innovation in film production',
+			'Box office success that broke multiple records',
+			'Film that launched new cinematic techniques',
+			'Groundbreaking visual effects that set industry standards',
+		],
+	},
+	History: {
+		titles: [
+			'Important treaty signing',
+			'Historical battle',
+			'Political revolution',
+			'Significant protest movement',
+			'Monumental construction completed',
+			'Historical figure birth/death',
+			'Cultural renaissance period',
+			'Empire rise/fall',
+			'Economic crisis begins',
+			'Exploration voyage completion',
+		],
+		descriptions: [
+			'Pivotal moment that shaped world history',
+			'Event that marked the beginning of a new era',
+			'Historical turning point with lasting impact',
+			'Cultural movement that transformed society',
+			'Political change that redefined international relations',
+			'Military conflict that changed borders',
+			'Social movement that achieved significant reforms',
+		],
+	},
+	'Computer Games': {
+		titles: [
+			'Groundbreaking game release',
+			'Gaming console launch',
+			'E-sports tournament',
+			'Game development studio founded',
+			'Revolutionary game engine created',
+			'Record-breaking game sales',
+			'Online gaming service launched',
+			'VR gaming breakthrough',
+			'Indie game success story',
+			'Gaming convention inaugural event',
+		],
+		descriptions: [
+			'Innovative gameplay that set new industry standards',
+			'Technical achievement in game development',
+			'Cultural phenomenon in the gaming community',
+			'Award-winning game design and storytelling',
+			'Platform that revolutionized online gaming experience',
+			'Graphics breakthrough that raised the bar',
+			'Game that defined a new genre in the industry',
+		],
+	},
+};

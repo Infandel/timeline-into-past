@@ -40,27 +40,49 @@
 	border: 2px solid rgb(202, 181, 181);
 }
 
-.circleContent {
+/* Base dot styles */
+.dot {
 	position: absolute;
-	width: 40px;
-	height: 40px;
+	--dot-size: 16px;
+	--mini-circle-size: 40px;
+
+	aspect-ratio: 1 / 1;
+	width: var(--dot-size);
+	height: var(--dot-size);
+	background-color: rgb(65, 167, 95);
 	border-radius: 50%;
+	border: none;
+
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	border: 3px solid white;
-	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-	background-color: whitesmoke;
-
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	transition: all 0.3s ease;
 
 	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
 
-	.innerNumber {
-		font-weight: bold;
-	}
+/* Dot number (hidden by default) */
+.dotNumber {
+	color: white;
+	font-size: 0;
+	font-weight: bold;
+	transition: font-size 0.3s ease;
+	user-select: none;
+}
+
+/* Hover effects */
+.dot:hover {
+	width: var(--mini-circle-size);
+	height: var(--mini-circle-size);
+	background-color: #333;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.dot:hover .dotNumber {
+	font-size: 16px;
 }
 
 .sliderArea {

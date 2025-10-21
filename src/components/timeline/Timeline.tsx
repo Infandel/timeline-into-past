@@ -1,13 +1,13 @@
 import React, { useRef, useState } from 'react';
-import { Interval } from '../../data/timelineData';
 import styles from './Timeline.module.scss';
 import EventSlider from '../eventSlider/EventSlider';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import cn from 'clsx';
+import { TimelineData } from '../../data/timelineData';
 
 type Props = {
-	intervals: Interval[];
+	intervals: TimelineData[];
 	activeIndex: number;
 	onChangeIndex: (i: number) => void;
 };
@@ -22,7 +22,7 @@ const Timeline: React.FC<Props> = ({ intervals, activeIndex, onChangeIndex }) =>
 	const endingYear = useRef<HTMLSpanElement | null>(null);
 	const [endYear, setEndYear] = useState(intervals[activeIndex]?.events?.at(-1)?.date);
 
-	// Drawing small circles on a Big main circle
+	// Drawing small circles on a Big main circle on initial Draw
 	useGSAP(
 		() => {
 			if (!circleRef.current || intervals.length === 0) return;
@@ -85,7 +85,7 @@ const Timeline: React.FC<Props> = ({ intervals, activeIndex, onChangeIndex }) =>
 	/* The `onSegmentClick` function is using the `contextSafe` hook provided by `useGSAP` to create an
 	animation that rotates elements on the page. When the function is called (presumably triggered by a
 	click event), it uses GSAP (GreenSock Animation Platform) to animate the rotation of elements with
-	the classes `.main-circle` and `.circle-image`. */
+	the classes `.main-circle` and `.circle-image`. It's need to be done simulteniously. */
 	const onSegmentClick = contextSafe(() => {
 		gsap.to('.main-circle', {
 			rotation: `+=${360 / intervals.length}`,
@@ -114,8 +114,8 @@ const Timeline: React.FC<Props> = ({ intervals, activeIndex, onChangeIndex }) =>
 				<div ref={containerRef} className={styles.circleContainer}>
 					<div ref={circleRef} className={cn('main-circle', styles.mainCircle)}>
 						{intervals.map((_, i) => (
-							<button key={i} className={cn(`circle-image`, styles.circleContent, `img-${i}`)} onClick={onSegmentClick}>
-								<div className={styles.innerNumber}>{i + 1}</div>
+							<button key={i} className={cn(`circle-image`, styles.dot, `img-${i}`)} onClick={onSegmentClick}>
+								<div className={styles.dotNumber}>{i + 1}</div>
 							</button>
 						))}
 					</div>

@@ -13,11 +13,13 @@
 		"gsap": "^3.12.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
-		"swiper": "^9.0.0"
+		"swiper": "^9.0.0",
+		"uuid": "^13.0.0"
 	},
 	"devDependencies": {
 		"@types/react": "^18.0.0",
 		"@types/react-dom": "^18.0.0",
+		"@types/uuid": "^10.0.0",
 		"@typescript-eslint/eslint-plugin": "^8.46.1",
 		"@typescript-eslint/parser": "^8.46.1",
 		"css-loader": "^6.0.0",
