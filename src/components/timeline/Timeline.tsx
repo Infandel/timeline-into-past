@@ -82,8 +82,10 @@ const Timeline: React.FC<Props> = ({ intervals, activeIndex, onChangeIndex }) =>
 
 	const { contextSafe } = useGSAP({ dependencies: [activeIndex, intervals.length], scope: containerRef }); // we can pass in a config object as the 1st parameter to make scoping simple
 
-	// ✅ wrapped in contextSafe() - animation will be cleaned up correctly
-	// selector text is scoped properly to the container.
+	/* The `onSegmentClick` function is using the `contextSafe` hook provided by `useGSAP` to create an
+	animation that rotates elements on the page. When the function is called (presumably triggered by a
+	click event), it uses GSAP (GreenSock Animation Platform) to animate the rotation of elements with
+	the classes `.main-circle` and `.circle-image`. */
 	const onSegmentClick = contextSafe(() => {
 		gsap.to('.main-circle', {
 			rotation: `+=${360 / intervals.length}`,
