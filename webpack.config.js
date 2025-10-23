@@ -1,11 +1,14 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+const isDev = process.env.NODE_ENV !== 'production';
 
 module.exports = {
-	mode: process.env.NODE_ENV || 'development',
+	mode: isDev ? 'development' : 'production',
 	entry: path.resolve(__dirname, 'src', 'index.tsx'),
 	output: {
-		filename: 'bundle.[contenthash].js',
+		filename: isDev ? 'bundle.js' : 'bundle.[contenthash].js',
 		path: path.resolve(__dirname, 'dist'),
 		clean: true,
 		publicPath: '/',
@@ -17,73 +20,70 @@ module.exports = {
 
 	module: {
 		rules: [
-			// ---------- TypeScript ----------
 			{
 				test: /\.tsx?$/,
 				use: 'ts-loader',
 				exclude: /node_modules/,
 			},
-
-			// ---------- Plain CSS (e.g., Swiper) ----------
 			{
 				test: /\.css$/i,
-				use: ['style-loader', 'css-loader'],
+				use: [
+					isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
+					{ loader: 'css-loader', options: { sourceMap: isDev } },
+				],
 			},
-
-			// ---------- SCSS Modules ----------
 			{
 				test: /\.module\.s[ac]ss$/i,
 				use: [
-					'style-loader',
+					isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
 					{
 						loader: 'css-loader',
 						options: {
 							modules: {
 								localIdentName: '[local]__[hash:base64:5]',
 							},
-							sourceMap: true,
+							sourceMap: isDev,
 						},
 					},
-					'postcss-loader',
+					{
+						loader: 'postcss-loader',
+						options: {
+							sourceMap: isDev,
+						},
+					},
 					{
 						loader: 'sass-loader',
 						options: {
-							implementation: require('sass'),
-							api: 'modern', // ✅ Use modern JS API (no warnings)
-							sassOptions: { quietDeps: true },
+							sourceMap: isDev,
+							sassOptions: {
+								quietDeps: true,
+								silenceDeprecations: ['legacy-js-api'],
+							},
 						},
 					},
 				],
 			},
-
-			// ---------- Global SCSS ----------
 			{
 				test: /\.s[ac]ss$/i,
 				exclude: /\.module\.s[ac]ss$/i,
 				use: [
-					'style-loader',
-					'css-loader',
-					'postcss-loader',
+					isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
+					{ loader: 'css-loader', options: { sourceMap: isDev } },
+					{ loader: 'postcss-loader', options: { sourceMap: isDev } },
 					{
 						loader: 'sass-loader',
 						options: {
-							implementation: require('sass'),
-							api: 'modern', // ✅ Use modern JS API (no warnings)
-							sassOptions: { quietDeps: true },
+							sourceMap: isDev,
+							sassOptions: {
+								quietDeps: true,
+								silenceDeprecations: ['legacy-js-api'],
+							},
 						},
 					},
 				],
 			},
-
-			// ---------- Images ----------
 			{
-				test: /\.(png|jpg|jpeg|gif|svg)$/i,
-				type: 'asset/resource',
-			},
-
-			// ---------- Fonts ----------
-			{
-				test: /\.(woff|woff2|eot|ttf|otf)$/i,
+				test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|eot|ttf|otf)$/i,
 				type: 'asset/resource',
 			},
 		],
@@ -93,9 +93,12 @@ module.exports = {
 		new HtmlWebpackPlugin({
 			template: path.resolve(__dirname, 'public', 'index.html'),
 		}),
+		new MiniCssExtractPlugin({
+			filename: isDev ? '[name].css' : '[name].[contenthash].css',
+		}),
 	],
 
-	devtool: 'source-map',
+	devtool: isDev ? 'source-map' : false,
 
 	devServer: {
 		static: path.resolve(__dirname, 'dist'),
@@ -106,6 +109,6 @@ module.exports = {
 	},
 
 	infrastructureLogging: {
-		level: 'warn', // suppress noisy deprecation chatter
+		level: 'warn',
 	},
 };

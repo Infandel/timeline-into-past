@@ -7,6 +7,13 @@
 		"build": "webpack --mode production",
 		"lint": "eslint src/**/*.{ts,tsx}"
 	},
+	"browserslist": [
+		"> 0.5%",
+		"last 2 versions",
+		"not dead",
+		"not op_mini all",
+		"not ie <= 11"
+	],
 	"dependencies": {
 		"@gsap/react": "^2.1.2",
 		"clsx": "^2.1.1",
@@ -26,6 +33,7 @@
 		"eslint": "^8.0.0",
 		"eslint-plugin-react": "^7.0.0",
 		"html-webpack-plugin": "^5.0.0",
+		"mini-css-extract-plugin": "^2.9.4",
 		"postcss-loader": "^7.0.0",
 		"sass": "^1.93.2",
 		"sass-loader": "^14.2.1",
