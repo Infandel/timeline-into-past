@@ -43,12 +43,3 @@ The application will be available at `http://localhost:3000`
 ## Build for production
 
 `npm run build`
-
-## Deployment to GitHub Pages
-
-## API Sources
-
-- **JSONPlaceholder**: https://jsonplaceholder.typicode.com/
-  - Used for posts and users data
-- **Rick and Morty API**: https://rickandmortyapi.com/
-  - Used for character analytics and visualization
