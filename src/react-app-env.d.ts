@@ -1,7 +1,7 @@
 /// <reference types="react" />
 /// <reference types="react-dom" />
 
-// Позволяет импортировать SCSS модули без ошибок типов
+// Letting you import SCSS modules without any Typescript errors
 
 declare module '*.module.scss' {
 	const classes: { [key: string]: string };

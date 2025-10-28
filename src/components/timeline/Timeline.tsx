@@ -5,10 +5,19 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import cn from 'clsx';
 import { TimelineData } from '../../data/timelineData';
+import { useCirclesDraw } from './hooks/useCirclesDraw';
+import { useFadingCategoryName } from './hooks/useFadingCategoryName';
+import { useAnimateYearsChange } from './hooks/useAnimateYearsChange';
 
-type TimelineProps = {
+interface TimelineProps {
 	intervals: TimelineData[];
-};
+}
+
+export interface IDisplayCategory {
+	current: string;
+	previous: string;
+	showPrevious: boolean;
+}
 
 const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
 
@@ -18,128 +27,47 @@ const Timeline = ({ intervals }: TimelineProps) => {
 	const containerRef = useRef<HTMLDivElement | null>(null);
 	const circleRef = useRef<HTMLDivElement | null>(null);
 
-	// Refs related to Big Years Numbers animation changes
-	const startingYear = useRef<HTMLSpanElement | null>(null);
-	const [startYear, setStartYear] = useState(intervals[activeIndex]?.events[0]?.date);
-	const endingYear = useRef<HTMLSpanElement | null>(null);
-	const [endYear, setEndYear] = useState(intervals[activeIndex]?.events?.at(-1)?.date);
+	// Refs and consts related to Big Years Numbers animation changes
+	const startYearDate = intervals[activeIndex]?.events[0]?.date;
+	const endYearDate = intervals[activeIndex]?.events?.at(-1)?.date;
 
-	// State and refs related to Displayed Current Category
-	const [displayCategory, setDisplayCategory] = useState({
+	const startingYearRef = useRef<HTMLSpanElement | null>(null);
+	const [startYear, setStartYear] = useState(startYearDate);
+	const endingYearRef = useRef<HTMLSpanElement | null>(null);
+	const [endYear, setEndYear] = useState(endYearDate);
+
+	// State and refs related to Displayed Current Category Name
+	const [displayCategory, setDisplayCategory] = useState<IDisplayCategory>({
 		current: intervals[activeIndex].category,
 		previous: intervals[activeIndex].category,
 		showPrevious: false,
 	});
-	const currentCatRef = useRef(null);
-	const previousCatRef = useRef(null);
+	const currentCatRef = useRef<HTMLDivElement | null>(null);
+	const previousCatRef = useRef<HTMLDivElement | null>(null);
 
-	// Drawing small circles on a Big main circle on initial Draw
-	useGSAP(
-		() => {
-			if (!circleRef.current || !containerRef.current || intervals.length === 0) return;
+	useCirclesDraw({ circleRef, containerRef, intervals });
 
-			const radius = circleRef.current.offsetWidth / 2;
+	useFadingCategoryName({
+		containerRef,
+		intervals,
+		activeIndex,
+		displayCategory,
+		setDisplayCategory,
+		previousCatRef,
+		currentCatRef,
+	});
 
-			// Position images around the circle
-			intervals.forEach((_, i) => {
-				const angle = (i / intervals.length) * Math.PI * 2 - Math.PI / 2; // start top
-				const image = circleRef.current?.querySelector(`.img-${i}`);
-
-				if (image) {
-					gsap.set(image, {
-						x: Math.cos(angle) * radius,
-						y: Math.sin(angle) * radius,
-					});
-				}
-			});
-
-			// Position category name above first category circle
-			const category = containerRef.current?.querySelector(`.category-name`);
-			const categoryNext = containerRef.current?.querySelector(`.category-name-next`);
-			const catAngle = (0 / intervals.length) * Math.PI * 2 - Math.PI / 2;
-
-			gsap.set([category, categoryNext], {
-				x: Math.cos(catAngle) * radius + 30,
-				y: Math.sin(catAngle) * radius - 30,
-			});
-		},
-		{ dependencies: [intervals.length], scope: containerRef }
-	);
-
-	// Fading out and in Current category Name
-	useGSAP(
-		() => {
-			if (intervals[activeIndex].category !== displayCategory.current) {
-				// Set up the transition - show both values
-				setDisplayCategory({
-					current: intervals[activeIndex].category,
-					previous: displayCategory.current,
-					showPrevious: true,
-				});
-
-				// Animate both elements
-				const tl = gsap.timeline();
-
-				// Fade out previous value
-				tl.to(previousCatRef.current, {
-					opacity: 0,
-					duration: 0.8,
-					ease: 'power2.out',
-				})
-					// Simultaneously fade in current value
-					.to(
-						currentCatRef.current,
-						{
-							opacity: 1,
-							duration: 0.8,
-							ease: 'power2.in',
-							onComplete: () => {
-								// Hide previous value after animation
-								setDisplayCategory((prev) => ({
-									...prev,
-									showPrevious: false,
-								}));
-							},
-						},
-						0.4
-					);
-			}
-		},
-		{ dependencies: [activeIndex], scope: containerRef }
-	);
-
-	// Animating years changing in dynamic manner
-	useGSAP(
-		() => {
-			// Create an object to animate
-			const obj = { startYear: +startingYear.current!.textContent, endYear: +endingYear.current!.textContent };
-
-			// compute an end year if available from the current active interval
-			const startYear = Number(intervals[activeIndex]?.events[0]?.date);
-			const endYear = Number(intervals[activeIndex]?.events?.at(-1)?.date);
-
-			gsap.to(obj, {
-				startYear,
-				duration: 0.5,
-				onUpdate: () => {
-					// Round and render the year to the DOM (guarding against null ref)
-					startingYear.current!.textContent = Math.round(+obj.startYear).toString();
-				},
-			});
-			setStartYear(intervals[activeIndex]?.events[0]?.date);
-
-			gsap.to(obj, {
-				endYear,
-				duration: 0.5,
-				onUpdate: () => {
-					// Round and render the year to the DOM (guarding against null ref)
-					endingYear.current!.textContent = Math.round(+obj.endYear).toString();
-				},
-			});
-			setEndYear(intervals[activeIndex]?.events?.at(-1)?.date);
-		},
-		{ dependencies: [intervals.length, activeIndex], scope: containerRef }
-	);
+	useAnimateYearsChange({
+		containerRef,
+		intervals,
+		activeIndex,
+		startingYearRef,
+		endingYearRef,
+		startYearDate,
+		endYearDate,
+		setStartYear,
+		setEndYear,
+	});
 
 	const { contextSafe } = useGSAP({ dependencies: [activeIndex, intervals.length], scope: containerRef }); // we can pass in a config object as the 1st parameter to make scoping simple
 
@@ -194,15 +122,15 @@ const Timeline = ({ intervals }: TimelineProps) => {
 	});
 
 	return (
-		<div className={styles.timeline}>
-			<div className={styles.header}>
-				<h2>Historical dates</h2>
-			</div>
+		<main className={styles.timeline}>
+			<h2 className={styles.header}>
+				Historical <br /> dates
+			</h2>
 
-			<div className={styles.centerArea}>
+			<section className={styles.centerArea}>
 				<div className={styles.numberLarge}>
-					<span ref={startingYear}>{startYear}</span>
-					<span ref={endingYear}>{endYear}</span>
+					<span ref={startingYearRef}>{startYear}</span>
+					<span ref={endingYearRef}>{endYear}</span>
 				</div>
 				<div ref={containerRef} className={styles.circleContainer}>
 					<div ref={circleRef} className={cn('main-circle', styles.mainCircle)}>
@@ -231,22 +159,30 @@ const Timeline = ({ intervals }: TimelineProps) => {
 						{displayCategory.current}
 					</div>
 				</div>
-			</div>
+			</section>
 
-			<div className={styles.sliderArea}>
-				<EventSlider events={intervals[activeIndex].events} />
-			</div>
-
-			<div className={styles.footerControls}>
-				<button onClick={() => onSegmentClick(clamp(activeIndex - 1, 0, intervals.length - 1))} aria-label='previous'>
+			<div className={styles.manualSwitch}>
+				<button
+					onClick={() => onSegmentClick(clamp(activeIndex - 1, 0, intervals.length - 1))}
+					disabled={activeIndex === 0}
+					aria-label='previous'
+				>
 					‹
 				</button>
-				<div className={styles.indexInfo}>{`${activeIndex + 1}/${intervals.length}`}</div>
-				<button onClick={() => onIncreasePeriod(clamp(activeIndex + 1, 0, intervals.length - 1))} aria-label='next'>
+				<span className={styles.indexInfo}>{`${activeIndex + 1}/${intervals.length}`}</span>
+				<button
+					onClick={() => onIncreasePeriod(clamp(activeIndex + 1, 0, intervals.length - 1))}
+					disabled={activeIndex === intervals.length - 1}
+					aria-label='next'
+				>
 					›
 				</button>
 			</div>
-		</div>
+
+			<section className={styles.sliderArea}>
+				<EventSlider events={intervals[activeIndex].events} />
+			</section>
+		</main>
 	);
 };
 

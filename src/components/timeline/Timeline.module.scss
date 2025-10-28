@@ -1,10 +1,30 @@
 .timeline {
-	padding: 40px 80px;
+	position: relative;
+
+	width: 80%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+
+	background-image: linear-gradient(to bottom, var(--submissive-grey) 0%, var(--submissive-grey) 100%),
+		linear-gradient(to right, var(--submissive-grey) 0%, var(--submissive-grey) 100%);
+	background-position: 50% 0, 0 37%;
+	background-size: 1px 100%, 100% 1px;
+	background-repeat: no-repeat;
+
+	border-left: 1px solid var(--submissive-grey);
+	border-right: 1px solid var(--submissive-grey);
 }
 
-.header h2 {
-	font-size: 36px;
-	margin: 0 0 20px 0;
+.header {
+	position: absolute;
+	top: 15%;
+
+	font-size: clamp(24px, 2.5vw, 42px);
+
+	border-left: 5px solid;
+	border-image: linear-gradient(to bottom, var(--accent-blue), var(--accent-pink)) 1;
+	padding-left: var(--timeline-left-padding);
 }
 
 .centerArea {
@@ -15,9 +35,9 @@
 }
 
 .numberLarge {
-	font-size: 160px;
+	font-size: clamp(60px, 10.5vw, 160px);
+
 	font-weight: 700;
-	z-index: -1;
 	color: var(--accent-blue);
 
 	display: flex;
@@ -46,7 +66,7 @@
 	width: 400px;
 	height: 400px;
 	border-radius: 50%;
-	border: 2px solid rgb(202, 181, 181);
+	border: 1px solid var(--submissive-grey);
 	position: relative;
 }
 
@@ -115,14 +135,18 @@
 	margin-top: 30px;
 }
 
-.footerControls {
+.manualSwitch {
+	position: absolute;
+	top: 55%;
+
 	display: flex;
 	align-items: center;
 	gap: 12px;
-	margin-top: 24px;
+
+	padding-left: var(--timeline-left-padding);
 }
 
-.footerControls button {
+.manualSwitch button {
 	height: 40px;
 	width: 40px;
 	border-radius: 50%;
@@ -130,6 +154,13 @@
 	background: white;
 	box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
 	cursor: pointer;
+	padding: 0;
+
+	font-size: 18px;
+
+	&:disabled {
+		pointer-events: none;
+	}
 }
 
 .indexInfo {
